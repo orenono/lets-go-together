@@ -1,0 +1,15 @@
+<h1>Let's go together</h1>
+<p>
+    <a href="/#/add-event">Add an Event</a>
+</p>
+
+<ul>
+    <li ng-repeat='event in events'>
+        <a href="/#/event/{{event._id}}">
+            {{event.nameOfEvent}}
+        </a>
+        <a href="/#/event/delete/{{event._id}}">
+            <i class="glyphicon glyphicon-remove"></i>
+        </a>
+    </li>
+</ul>
