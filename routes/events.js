@@ -2,13 +2,16 @@ var express = require('express');
 var router = express.Router();
 
 var db = require('monk')('localhost:27017/duet');
+var ticketmaster = require('../lib/ticketmaster');
 
 router.get('/', function(req, res) {
-	var collection = db.get('events');
-	collection.find({}, function(err, events) {
-		if (err) throw err;
-		res.json(events);
-	});
+    ticketmaster.getEvents(function(err, events) {
+        if (err) {
+            throw err;
+        }
+
+        res.json(events);
+    });
 });
 
 router.post('/', function(req, res) {
