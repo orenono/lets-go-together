@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+/* A route module defines one or more related endpoints and their handlers.
+*/
 var index = require('./routes/index');
 var users = require('./routes/users');
 var events = require('./routes/events');
@@ -25,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+//With this line we tell Express to use the videos module for 
+//any routes starting with /api/events.
 app.use('/api/events', events);
 
 // catch 404 and forward to error handler

@@ -1,7 +1,14 @@
+/*
+Now, we need to create a RESTful API for our videos. 
+We’re going to expose our videos at an endpoint like 
+/api/events.
+*/
+
 var express = require('express');
 var router = express.Router();
 
 var db = require('monk')('localhost:27017/duet');
+
 var ticketmaster = require('../lib/ticketmaster');
 
 router.get('/', function(req, res) {

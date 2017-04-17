@@ -1,4 +1,14 @@
+/*
+The first argument is the name of the module. 
+This is the same name we used with ng-app above. 
+The second argument is an array of dependencies. 
+If you provide this argument, the module method will 
+define a new module and return a reference to it. 
+If you exclude it, it’ll attempt to get a reference 
+to an existing module.
+*/
 var app = angular.module('LetsGoTogether', ['ngResource', 'ngRoute']);
+
 
 app.config(['$routeProvider', function($routeProvider){
     $routeProvider
