@@ -1,6 +1,6 @@
-<h1>Let's go together</h1>
+<h1>Let's Go Together</h1>
 <p>
-    <a href="/#/add-event">My Events</a>
+    <a href="/#/myevents">My Events</a>
 </p>
 <ul>
     <li ng-repeat='event in events'>
@@ -9,7 +9,7 @@
         </a>
         <a href="/#/event/delete/{{event._id}}">
             <i class="glyphicon glyphicon-remove"></i>
-            <a href="/#/add-event">I Want To Go</a>
         </a>
+        <a ng-click="addUserEvent(event._id)" href="/#/">I Want To Go</a>
     </li>
 </ul>

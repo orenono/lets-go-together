@@ -1,6 +1,6 @@
 /*
-Now, we need to create a RESTful API for our videos. 
-We’re going to expose our videos at an endpoint like 
+Now, we need to create a RESTful API for ticketmaster events. 
+We’re going to expose our events at an endpoint like 
 /api/events.
 */
 
@@ -12,13 +12,23 @@ var db = require('monk')('localhost:27017/duet');
 var ticketmaster = require('../lib/ticketmaster');
 
 router.get('/', function(req, res) {
-    ticketmaster.getEvents(function(err, events) {
+    var onComplete = function(err, events) {
         if (err) {
             throw err;
         }
 
         res.json(events);
-    });
+    };
+
+    // This is a search with specific event IDs
+    if (req.query && req.query.eventIds) {
+        ticketmaster.getEventsByIds(req.query.eventIds, onComplete);
+    } 
+
+    // This is an events search
+    else {
+        ticketmaster.getEvents(onComplete);
+    }
 });
 
 /*
@@ -37,42 +47,23 @@ any errors, we use the json method of the response (res) to return a JSON
 representation of the new video document.
 */
 
-router.post('/', function(req, res) {
-	var collection = db.get('events');
-	collection.insert({
-		nameOfEvent: req.body.nameOfEvent,
-		placeOfEvent: req.body.placeOfEvent
-	}, function(err, event) {
-		if(err) throw err;
-
-		res.json(event);
-	});
-});
 
 router.get('/:id', function(req, res) {
-    var collection = db.get('events');
-    collection.findOne({ _id: req.params.id }, function(err, event){
-        if (err) throw err;
+    ticketmaster.getEventsByIds([req.params.id], function(err, events) {
+        if (err) {
+            throw err;
+        }
 
-      	res.json(event);
+        if (!events || !events.length || !events[0]) {
+            throw new Error('Unexpected result');
+        }
+
+        res.json(events[0]);
     });
 });
 
-router.put('/:id', function(req, res){
-    var collection = db.get('events');
-    collection.update({
-        _id: req.params.id
-    },
-    {
-        nameOfEvent: req.body.nameOfEvent,
-        placeOfEvent: req.body.placeOfEvent
-    }, function(err, event){
-        if (err) throw err;
 
-        res.json(event);
-    });
-});
-
+// THIS CODE NEEDS TO BE REMOVED!! ONLY KEEP IT HERE FOR FUTURE REFERENCE!!
 router.delete('/:id', function(req, res){
     var collection = db.get('events');
     collection.remove({ _id: req.params.id }, function(err, event){

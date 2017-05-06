@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var events = require('./routes/events');
+var userEvents = require('./routes/userEvents');
 
 var app = express();
 
@@ -27,9 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
-//With this line we tell Express to use the videos module for 
+//With this line we tell Express to use the events module for 
 //any routes starting with /api/events.
 app.use('/api/events', events);
+app.use('/api/userEvents', userEvents);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,0 +1,11 @@
+<h1>Let's Go Together - My Events</h1>
+<ul>
+    <li ng-repeat='event in myevents'>
+        <a href="/#/event/{{event._id}}">
+            {{event.nameOfEvent}}
+        </a>
+        <a href="/#/myevents" ng-click="remove(event._id)">
+            <i class="glyphicon glyphicon-remove"></i>
+        </a>
+    </li>
+</ul>

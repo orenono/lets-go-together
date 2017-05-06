@@ -1,3 +1,29 @@
+function getLoggedInUserId() {
+    // TODO - implement for real!! This is just a temp implementation...
+    return 'orenono';
+}
+
+function addUserEvent($resource, eventId) {
+    var userId = getLoggedInUserId();
+    var UserEvents = $resource('/api/userEvents');
+    UserEvents.save({userId: userId, eventId: eventId});
+};
+
+function removeUserEvent($resource, eventId, callback) {
+    var userId = getLoggedInUserId();
+    var UserEventsId = $resource('/api/userEvents/:id');
+
+    UserEventsId.query({userId: userId, eventId: eventId}, function(userEvents) {
+        for (var i = 0; i < userEvents.length; i++) {
+            UserEventsId.delete({id: userEvents[i]._id});
+        }
+
+        if (typeof callback === 'function') {
+            callback();
+        }
+    });
+}
+
 /*
 The first argument is the name of the module. 
 This is the same name we used with ng-app above. 
@@ -38,13 +64,17 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'partials/home.html',
             controller: 'HomeCtrl'
         })
+        .when('/myevents', {
+            templateUrl: 'partials/myevents.html',
+            controller: 'MyEventsCtrl'
+        })
         .when('/add-event', {
             templateUrl: 'partials/event-form.html',
             controller: 'AddEventCtrl'
         })
         .when('/event/:id', {
-        	templateUrl: 'partials/event-form.html',
-        	controller: 'EditEventCtrl'
+        	templateUrl: 'partials/event-info.html',
+        	controller: 'EventInfoCtrl'
     	})
     	.when('/event/delete/:id', {
         	templateUrl: 'partials/event-delete.html',
@@ -72,11 +102,11 @@ implementation of the controller. In this example, our function gets
 two parameters called $scope and $resource. This is because we 
 referenced $scope and $resource before declaring this function.
 we call the $resource method to get a resource object for the given API 
-endpoint (/api/videos). This object will provide methods to work with our API. 
-We use the query method to get all videos. The query method gets a callback 
+endpoint (/api/events). This object will provide methods to work with our API. 
+We use the query method to get all events. The query method gets a callback 
 method that will be executed when the query result is ready. This function 
-will receive the videos we retrieved from the server. Finally, we store these 
-videos in $scope so that we can access them in the view for rendering. 
+will receive the events we retrieved from the server. Finally, we store these 
+events in $scope so that we can access them in the view for rendering. 
 Remember, $scope is the glue between views and controllers.
 */
 
@@ -86,6 +116,44 @@ app.controller('HomeCtrl', ['$scope', '$resource',
         Events.query(function(events){
             $scope.events = events;
         });
+
+        $scope.addUserEvent = function(eventId) {
+            addUserEvent($resource, eventId);
+        };
+    }]);
+
+app.controller('MyEventsCtrl', ['$scope', '$resource',
+    function($scope, $resource) {
+        var Events = $resource('/api/events');
+        var UserEvents = $resource('/api/userEvents');
+        var userId = getLoggedInUserId();
+        var events;
+
+        function runMainQuery() {
+            UserEvents.query({userId: userId}, function(userEvents) {
+                var eventIds = userEvents.map(function(obj) {
+                    return obj.eventId;
+                });
+
+                Events.query({eventIds: eventIds}, function(ev) {
+                    events = ev;
+                    $scope.myevents = events;
+                });
+            });
+        }
+
+        $scope.remove = function(eventId) {
+            removeUserEvent($resource, eventId);
+
+            // Also refresh HTML by re-assigning $scope.myevents
+            if (events) {
+                $scope.myevents = events = events.filter(function(event) {
+                    return event._id !== eventId;
+                });
+            }
+        }
+
+        runMainQuery();
     }]);
 
 
@@ -99,23 +167,45 @@ app.controller('AddEventCtrl', ['$scope', '$resource', '$location',
         };
     }]);
 
-app.controller('EditEventCtrl', ['$scope', '$resource', '$location', '$routeParams',
-    function($scope, $resource, $location, $routeParams){	
-        var Events = $resource('/api/events/:id', { id: '@_id' }, {
-            update: { method: 'PUT' }
-        });
+app.controller('EventInfoCtrl', ['$scope', '$resource', '$routeParams',
+    function($scope, $resource, $routeParams) {
+        var Events = $resource('/api/events/:id');
+        var UserEvents = $resource('/api/userEvents');
+        var userId = getLoggedInUserId();
+        var event;
 
-        Events.get({ id: $routeParams.id }, function(event){
-            $scope.event = event;
-        });
-
-        $scope.save = function(){
-            Events.update($scope.event, function(){
-                $location.path('/');
+        Events.get({ id: $routeParams.id }, function(ev) {
+            UserEvents.query({userId: userId, eventId: $routeParams.id}, function(userEvents) {
+                event = ev;
+                event.going = !!userEvents.length;
+                $scope.event = event;
             });
-        }
-    }]);
+        })
 
+        $scope.addUserEvent = function(eventId) {
+            addUserEvent($resource, eventId);
+            if (event) {
+                event.going = true;
+                $scope.event = event;
+            }
+        };
+        $scope.removeUserEvent = function(eventId) {
+            removeUserEvent($resource, eventId);
+            if (event) {
+                event.going = false;
+                $scope.event = event;
+            }
+        };
+
+        // TEMP CODE FOR DEBUGGING
+        // $scope.event = {
+        //     nameOfEvent: 'JojoMatbucha',
+        //     dateOfEvent: '11/02/97',
+        //     placeOfEvent: 'Robico',
+        //     url: 'https://google.com',
+        //     imgUrl: 'https://s-media-cache-ak0.pinimg.com/236x/be/6b/fe/be6bfe74c318cafbfa9d15aab1a02ab3.jpg'
+        // };
+    }]);
 
 app.controller('DeleteEventCtrl', ['$scope', '$resource', '$location', '$routeParams',
     function($scope, $resource, $location, $routeParams){

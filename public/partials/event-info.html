@@ -1,0 +1,28 @@
+<!--
+PHASE I (DONE)
+========
+
+title
+dates, place, tickets
+picture of event
+
+PHASE II (HALF DONE)
+=========
+
+I want to go button or already going indication
+whos is going?
+
+-->
+
+<h1 class="event-title">{{event.nameOfEvent}}</h1>
+<a href="/#/myevents">My Events</a>
+<div class="event-date">{{event.dateOfEvent}}</div>
+<div class="event-location coolio">{{event.placeOfEvent}}</div>
+<a href="{{event.url}}">Buy Tickets</a>
+<img src="{{event.imgUrl}}"></img>
+<div ng-if=event.going>I'm going
+	<a ng-click="removeUserEvent(event._id)"> 
+		<i class="glyphicon glyphicon-remove"></i>
+    </a>
+</div>
+<div ng-if=!event.going><a ng-click="addUserEvent(event._id)">I Want To Go</a></div>
