@@ -1,6 +1,11 @@
+var rootScope;
+
 function getLoggedInUserId() {
-    // TODO - implement for real!! This is just a temp implementation...
-    return 'orenono';
+    if (rootScope && rootScope.user && rootScope.user.id) {
+        return rootScope.user.id;
+    }
+
+    return 'user_does_not_exist';
 }
 
 function addUserEvent($resource, eventId) {
@@ -36,6 +41,20 @@ Here we depend on two modules: "ngResource",
 for consuming RESTful APIs and "ngRoute" for routing.
 */
 var app = angular.module('LetsGoTogether', ['ngResource', 'ngRoute']);
+
+
+// Initialize user on rootScope (if logged in)
+app.run(function ($rootScope, $http) {
+    rootScope = $rootScope;
+
+    $http.get('/login/confirm')
+        .success(function (user) {
+            if (user) {
+                $rootScope.user = user;
+            }
+        });
+});
+
 
 /*
 We’re using the config method of the app module to provide 
@@ -80,6 +99,14 @@ app.config(['$routeProvider', function($routeProvider){
         	templateUrl: 'partials/event-delete.html',
         	controller: 'DeleteEventCtrl'
     	})
+        .when('/login', {
+            templateUrl: 'partials/login/index.html',
+            controller: 'LoginCtrl'
+        })
+        .when('/profile', {
+            templateUrl: 'partials/login/profile.html',
+            controller: 'ProfileCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -122,8 +149,16 @@ app.controller('HomeCtrl', ['$scope', '$resource',
         };
     }]);
 
-app.controller('MyEventsCtrl', ['$scope', '$resource',
+app.controller('LoginCtrl', ['$scope', '$resource',
     function($scope, $resource) {
+    }]);
+
+app.controller('ProfileCtrl', ['$scope', '$location',
+    function($scope, $location) {
+    }]);
+
+app.controller('MyEventsCtrl', ['$scope', '$resource', '$location',
+    function($scope, $resource, $location) {
         var Events = $resource('/api/events');
         var UserEvents = $resource('/api/userEvents');
         var userId = getLoggedInUserId();
@@ -135,10 +170,14 @@ app.controller('MyEventsCtrl', ['$scope', '$resource',
                     return obj.eventId;
                 });
 
-                Events.query({eventIds: eventIds}, function(ev) {
-                    events = ev;
-                    $scope.myevents = events;
-                });
+                if (eventIds.length) {
+                    Events.query({eventIds: eventIds}, function(ev) {
+                        events = ev;
+                        $scope.myevents = events;
+                    });
+                } else {
+                    $scope.myevents = [];
+                }
             });
         }
 
@@ -175,10 +214,28 @@ app.controller('EventInfoCtrl', ['$scope', '$resource', '$routeParams',
         var event;
 
         Events.get({ id: $routeParams.id }, function(ev) {
-            UserEvents.query({userId: userId, eventId: $routeParams.id}, function(userEvents) {
+            UserEvents.query({eventId: $routeParams.id}, function(userEvents) {
                 event = ev;
-                event.going = !!userEvents.length;
+
+                // I'm not going unless proven otherwise
+                event.going = false;
+                for (var i = 0; i < userEvents.length; ++i) {
+                    console.log(userEvents[i]);
+                    if (userEvents[i].userId === userId) {
+                        console.log('yay');
+                        event.going = true;
+                        break;
+                    }
+                }
+
                 $scope.event = event;
+
+                var uniqueUsers = {};
+                userEvents.forEach(function(userEvent) {
+                    uniqueUsers[userEvent.userId] = true;
+                });
+
+                $scope.users = Object.keys(uniqueUsers).map(function(userId) { return {id: userId}; });
             });
         })
 
@@ -187,6 +244,7 @@ app.controller('EventInfoCtrl', ['$scope', '$resource', '$routeParams',
             if (event) {
                 event.going = true;
                 $scope.event = event;
+                $scope.users = [{id: userId}].concat($scope.users);
             }
         };
         $scope.removeUserEvent = function(eventId) {
@@ -194,6 +252,9 @@ app.controller('EventInfoCtrl', ['$scope', '$resource', '$routeParams',
             if (event) {
                 event.going = false;
                 $scope.event = event;
+                $scope.users = $scope.users.filter(function(user) {
+                    return user.id !== userId;
+                });
             }
         };
 
