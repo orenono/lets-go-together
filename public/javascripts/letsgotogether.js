@@ -24,6 +24,24 @@ function removeUserEvent($resource, eventId, callback) {
     });
 }
 
+var checkLoggedin = function($q, $timeout, $http, $location, $rootScope) {
+  var deferred = $q.defer();
+
+  $http.get('/loggedin').success(function(user) {
+    $rootScope.errorMessage = null;
+    //User is Authenticated
+    if (user !== '0') {
+      $rootScope.currentUser = user;
+      deferred.resolve();
+    } else { //User is not Authenticated
+      $rootScope.errorMessage = 'You need to log in.';
+      deferred.reject();
+      $location.url('/login');
+    }
+  });
+  return deferred.promise;
+}
+
 /*
 The first argument is the name of the module. 
 This is the same name we used with ng-app above. 
@@ -80,6 +98,20 @@ app.config(['$routeProvider', function($routeProvider){
         	templateUrl: 'partials/event-delete.html',
         	controller: 'DeleteEventCtrl'
     	})
+        .when('/login', {
+            templateUrl: 'partials/login.html',
+            controller: 'LoginCtrl'
+        })
+        .when('/signup', {
+            templateUrl: 'partials/signup.html',
+            controller: 'SignUpCtrl'
+        })
+        .when('/profile', {
+            templateUrl: 'partials/profile.html',
+            resolve: {
+                logincheck: checkLoggedin
+        }
+    })
         .otherwise({
             redirectTo: '/'
         });
@@ -221,3 +253,36 @@ app.controller('DeleteEventCtrl', ['$scope', '$resource', '$location', '$routePa
             });
         }
     }]);
+
+app.controller("NavCtrl", function($rootScope, $scope, $http, $location) {
+  $scope.logout = function() {
+    $http.post("/logout")
+      .success(function() {
+        $rootScope.currentUser = null;
+        $location.url("/home");
+      });
+  }
+});
+
+app.controller("SignUpCtrl", function($scope, $http, $rootScope, $location) {
+  $scope.signup = function(user) {
+
+    if (user.password == user.password2) {
+      $http.post('/signup', user)
+        .success(function(user) {
+          $rootScope.currentUser = user;
+          $location.url("/profile");
+        });
+    }
+  }
+});
+
+app.controller("LoginCtrl", function($location, $scope, $http, $rootScope) {
+  $scope.login = function(user) {
+    $http.post('/login', user)
+      .success(function(response) {
+        $rootScope.currentUser = response;
+        $location.url("/profile");
+      });
+  }
+});
