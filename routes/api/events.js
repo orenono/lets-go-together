@@ -31,21 +31,6 @@ router.get('/', function(req, res) {
     }
 });
 
-/*
-First, note the use of router.post method. In the last section, 
-we used router.get method for handling an HTTP GET request. 
-Here, we use HTTP POST, which is the REST convention for creating 
-new objects.
-In the route handler, first we get a reference to the events 
-collection and then use the insert method to add a new document to Mongo.
-The first argument to this method is a JSON object with two properties: 
-title and description. We read the values for these properties using 
-req.body. This object represents the data that will be posted in the 
-body of the request.
-Finally, in the callback method for inserting a document, if we don’t get 
-any errors, we use the json method of the response (res) to return a JSON 
-representation of the new video document.
-*/
 
 
 router.get('/:id', function(req, res) {
