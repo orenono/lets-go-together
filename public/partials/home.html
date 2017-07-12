@@ -1,11 +1,10 @@
 <ng-include src="'/partials/header.html'"></ng-include>
 
 
-<h2>Let's Go Together</h2>
-<h5>   Featured Events:</h5>
-<ul>
+<p style= "font-size:14px" class= "text-warning"> Featured Events:</p>
+<ul style="font-size:13px" class= "list-style">
     <li ng-repeat='event in events'>
-        <a href="/#/event/{{event._id}}">
+        <a style= "color:grey" href="/#/event/{{event._id}}">
             {{event.nameOfEvent}}
         </a>
     </li>

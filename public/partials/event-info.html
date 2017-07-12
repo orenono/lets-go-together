@@ -28,16 +28,18 @@ who is going?
 <div  href="/#/event/{{event._id}}"> {{event.placeOfEvent}} </div>
 <a  href="{{event.url}}">Buy Tickets</a><br/>
 <img src="{{event.imgUrl}}"></img>
-<div ng-if=event.going>I'm going
+<div ng-if=event.going><p class="text-success">I'm going to this event!</p>
 	<a ng-click="removeUserEvent(event._id)"> 
-		<i class="glyphicon glyphicon-remove"></i>
+		<button type="button" class="btn btn-danger btn-sm">Remove</button>
     </a>
 </div>
-<div ng-if=!event.going&&user><a ng-click="addUserEvent(event._id)">I Want To Go</a></div>
+<div ng-if=!event.going&&user><a ng-click="addUserEvent(event._id)"><button type="button" class="btn btn-primary btn-sm">I want to go</button>
+	
+</a></div>
 
 <br/><br/>
 <div ng-if=users.length>
-	<h2>Going:</h2>
+	<h8>Who else is going to this event:</h8>
     <div class="users-container" ng-repeat='user in users'>
         <ng-include src="'/partials/user.html'"></ng-include>
     </div>

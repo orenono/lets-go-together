@@ -1,13 +1,13 @@
 <ng-include src="'/partials/header.html'"></ng-include>
 
-<h1>Let's Go Together - My Events</h1>
-<ul>
+<h5 style= "font-size: 14px" style= "color: orange">My Events:</h5>
+<ul style= "font-size: 13px">
     <li ng-repeat='event in myevents'>
         <a href="/#/event/{{event._id}}">
             {{event.nameOfEvent}}
         </a>
-        <a href="/#/myevents" ng-click="remove(event._id)">
-            <i class="glyphicon glyphicon-remove"></i>
+        <a href="/#/myevents" ng-click="remove(event._id)"><button type="button" class="btn btn-danger btn-sm">Remove</button>
         </a>
     </li>
 </ul>
+
