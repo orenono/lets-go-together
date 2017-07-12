@@ -1,6 +1,10 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+  
+    /*  background: grey !important; //If I want to overwrite bootstrap background color
+    */
 }
 
 a {

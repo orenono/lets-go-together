@@ -1,6 +1,42 @@
+<!--
 <p class="header">
 	<a href="/#/">Home</a>
     <a ng-if=!user href="/#login">Login</a> 
     <a ng-if=user href="/#/myevents">My Events</a>
     <a ng-if=user href="/#/profile">Profile</a>
+    <!--
+    need to implement logout
+   
+    <a ng-if=user href="/#logout">LogOut</a>
+</p>
+-->
+<p class="header">
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      
+      <li class="nav-item">
+        <a class="nav-link" href="/#/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a ng-if=!user class="nav-link" href="/#login">Login</a> 
+      </li>
+      <li class="nav-item">
+        <a ng-if=user class="nav-link" href="/#/myevents">My Events</a>
+      </li>
+       <li class="nav-item">
+        <a ng-if=user class="nav-link" href="/#/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a ng-if=user class="nav-link" href="/#logout">Logout</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search for Events</button>
+    </form>
+  </div>
+</nav>
 </p>
