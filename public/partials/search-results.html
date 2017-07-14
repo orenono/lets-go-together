@@ -1,21 +1,15 @@
 <ng-include src="'/partials/header.html'"></ng-include>
 
-<!--
-<h1 class= "display-4" style="color:green;font-size: 32px">Find someone to go with to your favorite events</h1>
 
--->
-<br> 
-<br>
-<p style= "font-size:18px" class= "text-warning"> Featured Events in NYC:</p>
-
-
+<p style= "font-size:14px" class= "text-warning"> Search results:</p>
 <ul style="font-size:13px" class= "list-unstyled">
     <li ng-repeat='event in events'>
         <a style= "color:grey" href="/#/event/{{event._id}}">
         <img src="{{event.imgUrl}}" class="img-thumbnail rounded" height="140" width="140">
             {{event.nameOfEvent}}
             {{event.dateOfEvent}}
-            
+
+
         </a>
     </li>
 </ul>

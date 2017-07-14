@@ -1,9 +1,3 @@
-/*
-Now, we need to create a RESTful API for ticketmaster events. 
-We’re going to expose our events at an endpoint like 
-/api/events.
-*/
-
 var express = require('express');
 var router = express.Router();
 
@@ -12,12 +6,12 @@ var db = require('monk')('localhost:27017/duet');
 var ticketmaster = require('../../lib/ticketmaster');
 
 router.get('/', function(req, res) {
-    var onComplete = function(err, events) {
+    var onComplete = function(err, eventSearchResults) {
         if (err) {
             throw err;
         }
 
-        res.json(events);
+        res.json(eventSearchResults);
     };
 
     // This is a search with specific event IDs
@@ -27,23 +21,23 @@ router.get('/', function(req, res) {
 
     // This is an events search
     else {
-        ticketmaster.getFeaturedEvents(onComplete);
+        ticketmaster.getSearchEventResults(onComplete);
     }
 });
 
 
 
 router.get('/:id', function(req, res) {
-    ticketmaster.getEventsByIds([req.params.id], function(err, events) {
+    ticketmaster.getEventsByIds([req.params.id], function(err, eventSearchResults) {
         if (err) {
             throw err;
         }
 
-        if (!events || !events.length || !events[0]) {
+        if (!eventSearchResults || !eventSearchResults.length || !eventSearchResults[0]) {
             throw new Error('Unexpected result');
         }
 
-        res.json(events[0]);
+        res.json(eventSearchResults[0]);
     });
 });
 

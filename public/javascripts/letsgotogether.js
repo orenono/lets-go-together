@@ -78,6 +78,10 @@ app.config(['$routeProvider', function($routeProvider){
             templateUrl: 'partials/login/profile.html',
             controller: 'ProfileCtrl'
         })
+        .when('/search-results', {
+            templateUrl: 'partials/search-results.html',
+            controller: 'SearchEventCtrl'
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -90,6 +94,18 @@ app.controller('HomeCtrl', ['$scope', '$resource',
         var Events = $resource('/api/events');
         Events.query(function(events){
             $scope.events = events;
+        });
+
+        $scope.addUserEvent = function(eventId) {
+            addUserEvent($resource, eventId);
+        };
+    }]);
+
+app.controller('SearchEventCtrl', ['$scope', '$resource', 
+    function($scope, $resource){
+        var Events = $resource('/api/eventSearchResults');
+        Events.query(function(eventSearchResults){
+            $scope.events = eventSearchResults;
         });
 
         $scope.addUserEvent = function(eventId) {

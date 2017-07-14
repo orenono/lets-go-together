@@ -8,6 +8,9 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
 
+var eventNameSearch ='john';
+
+
 // Configure the Facebook strategy for use by Passport.
 //
 // OAuth 2.0-based strategies require a `verify` function which receives the
@@ -73,6 +76,7 @@ app.use('/api/events', 		 require('./routes/api/events'));
 app.use('/api/userEvents', require('./routes/api/userEvents'));
 app.use('/login', 			   require('./routes/login/index'));
 app.use('/login/facebook', require('./routes/login/facebook'));
+app.use('/api/eventSearchResults', require('./routes/api/eventSearchResults'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

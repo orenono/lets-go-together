@@ -27,7 +27,7 @@ who is going?
 <div  href="/#/event/{{event._id}}"> {{event.dateOfEvent}} </div>
 <div  href="/#/event/{{event._id}}"> {{event.placeOfEvent}} </div>
 <a  href="{{event.url}}">Buy Tickets</a><br/>
-<img src="{{event.imgUrl}}"></img>
+<img src="{{event.imgUrl}}" height="200" ></img>
 <div ng-if=event.going><p class="text-success">I'm going to this event!</p>
 	<a ng-click="removeUserEvent(event._id)"> 
 		<button type="button" class="btn btn-danger btn-sm">Remove</button>
