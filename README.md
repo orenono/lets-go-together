@@ -1,8 +1,11 @@
 # letsgotogether
 
+PoC social networking application centered around local events. Written using MEAN stack (MongoDB, Express, Angular, Node).
+
+
 [![letsGoTogether](http://i.imgur.com/A7WZ3b7.png)](https://vimeo.com/226357040 "Lets Go Together - Click to Watch!")
 
-PoC social networking application centered around local events. Written using MEAN stack (MongoDB, Express, Angular, Node).
+
 This is a web application which aims to connect people with similar interests. Users can search for their favorite artist and when they will be performing in their town. Once a user registers to go for a certain event, they will be able to see other people who are looking for someone to go with to that same event.
 
 Users will be able to sign up to this application with their Facebook account.
