@@ -1,4 +1,4 @@
-# letsgotogether
+# Lets Go Together
 
 PoC social networking application centered around local events. Written using MEAN stack (MongoDB, Express, Angular, Node).
 
